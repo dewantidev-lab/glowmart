@@ -9,6 +9,33 @@ import axiosClient from "../api/axiosClient";
 
 const ProductContext = createContext();
 
+const imageBaseUrl = "/images/products";
+
+// Pemetaan nama produk dengan file gambar frontend
+const productImages = {
+  "Lavojoy Body Serum": "Lavojoy.png",
+  "Sukin Bodywash for Men": "Sukin body wash for men.jpg",
+  "Primer Parfum/Fragrance": "Primer Fragrance.jpg",
+  "Parfum Onix FWB": "Onix FWB.jpg",
+  "Maybelline Teddy Tint": "maybellineteddytint.jpg",
+  "Wardah Matte Foundation": "wardahmattefoundi.jpg",
+  "Makarizo Hairmask": "makarizohairmask.png",
+  "Loreal Shampoo": "lorealshampoo.jpg",
+  "Skintific Serum Pink": "skintificserum.jpg",
+  "Azarine Sunscreen": "azariness.jpg",
+  "Skintific Moisturizer": "skintificmoist.jpg",
+  "Facial Wash Skintific Biru": "skintificcleanser.jpg"
+};
+
+// Fungsi mengambil URL gambar berdasarkan nama produk
+const getProductImage = (item) => {
+  const imageName = productImages[item.name];
+
+  return imageName
+    ? `${imageBaseUrl}/${encodeURIComponent(imageName)}`
+    : "";
+};
+
 export function ProductProvider({ children }) {
   const queryClient = useQueryClient();
 
@@ -75,9 +102,7 @@ export function ProductProvider({ children }) {
           ...item,
           id: item.product_id,
           category_name: item.category?.category || "",
-          img: item.img
-            ? `http://127.0.0.1:8000/storage/${item.img}`
-            : "",
+          img: getProductImage(item),
         })),
       };
     },
@@ -94,9 +119,7 @@ export function ProductProvider({ children }) {
     category: item.category_id,
     category_name: item.category?.category || "",
     rating: item.rating || 0,
-    img: item.img
-      ? `http://127.0.0.1:8000/storage/${item.img}`
-      : "",
+    img: getProductImage(item),
   }));
 
   // Menambahkan produk
