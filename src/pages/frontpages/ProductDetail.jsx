@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { products } from "../../utils/data";
 import { useCart } from "../../utils/CartContext";
+import { useProducts } from "../../utils/ProductContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { products = [], isLoading, isError } = useProducts();
 
+  // Mencari produk berdasarkan slug dari URL
   const p = products.find((item) => item.slug === id);
 
   const [rating, setRating] = useState(0);
@@ -29,6 +31,30 @@ export default function ProductDetail() {
     setReview("");
   };
 
+  // Tampilan saat mengambil data
+  if (isLoading) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500">Memuat detail produk...</p>
+      </div>
+    );
+  }
+
+  // Tampilan jika API mengalami error
+  if (isError) {
+    return (
+      <div className="text-center py-16">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Gagal memuat produk
+        </h1>
+        <p className="text-gray-500 mt-2">
+          Periksa koneksi ke server Laravel.
+        </p>
+      </div>
+    );
+  }
+
+  // Tampilan jika produk tidak ditemukan
   if (!p) {
     return (
       <div className="text-center py-16">
@@ -83,7 +109,7 @@ export default function ProductDetail() {
           </div>
 
           <p className="text-3xl font-bold text-gray-900 mt-6">
-            Rp {p.price.toLocaleString("id-ID")}
+            Rp {Number(p.price).toLocaleString("id-ID")}
           </p>
 
           <p className="text-gray-500 mt-2">
@@ -92,9 +118,12 @@ export default function ProductDetail() {
 
           <button
             onClick={() => addToCart(p)}
-            className="w-full mt-6 px-6 py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition"
+            disabled={p.stock <= 0}
+            className="w-full mt-6 px-6 py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            + Tambahkan ke Keranjang
+            {p.stock <= 0
+              ? "Stok Habis"
+              : "+ Tambahkan ke Keranjang"}
           </button>
         </div>
       </section>

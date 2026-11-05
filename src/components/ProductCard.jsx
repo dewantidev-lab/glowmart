@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../utils/CartContext";
 
-export default function ProductCard({ p }) {
+export default function ProductCard({ p }){
   const { addToCart } = useCart();
 
   return (
@@ -27,7 +27,7 @@ export default function ProductCard({ p }) {
           {p.category_name}
         </p>
 
-        <h2 className="font-semibold text-gray-800 leading-snug min-h-[48px]">
+        <h2 className="font-semibold text-gray-800 leading-snug min-h-12">
           {p.name}
         </h2>
 

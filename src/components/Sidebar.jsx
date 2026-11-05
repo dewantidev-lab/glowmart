@@ -1,8 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/AuthContext";
+import toast from "react-hot-toast";
 
-// SidebarOpen menerima props dari AdminLayout.
-// sidebarOpen digunakan untuk menentukan sidebar sedang terbuka atau tertutup.
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Berhasil logout!");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      toast.error("Terjadi kesalahan saat logout.");
+    }
+  };
+
   return (
     <div
       className={`${
@@ -34,6 +47,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         >
           About
         </Link>
+
+        <button
+          onClick={handleLogout}
+          className="text-left hover:bg-red-100 hover:text-red-600 p-2 rounded mt-4"
+        >
+          Logout
+        </button>
       </nav>
     </div>
   );
